@@ -1,0 +1,127 @@
+{
+  "name": "advanced-sidebar-tools",
+  "displayName": "Advanced Sidebar Tools",
+  "description": "Adds Duplicate, File Info, Copy Path, Open in Terminal, Compare With and Change Case options to the Explorer context menu.",
+  "version": "0.2.0",
+  "publisher": "evomark",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./src/extension.js",
+  "activationEvents": [],
+  "contributes": {
+    "commands": [
+      {
+        "command": "advancedSidebarTools.duplicate",
+        "title": "Duplicate",
+        "category": "Sidebar Tools"
+      },
+      {
+        "command": "advancedSidebarTools.fileInfo",
+        "title": "File Info",
+        "category": "Sidebar Tools"
+      },
+      {
+        "command": "advancedSidebarTools.copyPath",
+        "title": "Copy Path As…",
+        "category": "Sidebar Tools"
+      },
+      {
+        "command": "advancedSidebarTools.openInTerminal",
+        "title": "Open in Terminal Here",
+        "category": "Sidebar Tools"
+      },
+      {
+        "command": "advancedSidebarTools.compareWith",
+        "title": "Compare With…",
+        "category": "Sidebar Tools"
+      },
+      {
+        "command": "advancedSidebarTools.renameCase",
+        "title": "Rename: Change Case…",
+        "category": "Sidebar Tools"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "advancedSidebarTools.openInTerminal",
+          "group": "navigation@99"
+        },
+        {
+          "command": "advancedSidebarTools.compareWith",
+          "group": "3_compare@99",
+          "when": "!explorerResourceIsFolder || listMultiSelection"
+        },
+        {
+          "command": "advancedSidebarTools.duplicate",
+          "group": "5_cutcopypaste@50"
+        },
+        {
+          "command": "advancedSidebarTools.copyPath",
+          "group": "6_copypath@99"
+        },
+        {
+          "command": "advancedSidebarTools.renameCase",
+          "group": "7_modification@50"
+        },
+        {
+          "command": "advancedSidebarTools.fileInfo",
+          "group": "7_modification@99"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "advancedSidebarTools.duplicate",
+          "when": "resourceScheme == file"
+        },
+        {
+          "command": "advancedSidebarTools.fileInfo",
+          "when": "resourceScheme == file"
+        },
+        {
+          "command": "advancedSidebarTools.copyPath",
+          "when": "resourceScheme == file"
+        },
+        {
+          "command": "advancedSidebarTools.openInTerminal",
+          "when": "resourceScheme == file"
+        },
+        {
+          "command": "advancedSidebarTools.compareWith",
+          "when": "resourceScheme == file"
+        },
+        {
+          "command": "advancedSidebarTools.renameCase",
+          "when": "resourceScheme == file"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Advanced Sidebar Tools",
+      "properties": {
+        "advancedSidebarTools.terminal": {
+          "type": "string",
+          "enum": [
+            "integrated",
+            "external"
+          ],
+          "enumDescriptions": [
+            "Open a terminal panel inside VSCodium.",
+            "Open your system terminal app (set via terminal.external.osxExec)."
+          ],
+          "default": "integrated",
+          "description": "Where \"Open in Terminal Here\" opens the terminal."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "package": "npx --yes @vscode/vsce package --allow-missing-repository",
+    "install-codium": "codium --install-extension advanced-sidebar-tools-$npm_package_version.vsix --force"
+  }
+}
