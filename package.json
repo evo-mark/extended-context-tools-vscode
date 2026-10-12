@@ -2,7 +2,7 @@
   "name": "advanced-sidebar-tools",
   "displayName": "Advanced Sidebar Tools",
   "description": "Adds Duplicate, File Info, Copy Path, Open in Terminal, Compare With and Change Case options to the Explorer context menu.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "publisher": "evomark",
   "license": "MIT",
   "engines": {
