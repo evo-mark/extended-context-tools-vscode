@@ -22,10 +22,6 @@ export function activate(context) {
 			(uri, uris) => runAll(uri, uris, copyPath),
 		),
 		vscode.commands.registerCommand(
-			"advancedSidebarTools.openInTerminal",
-			(uri, uris) => run(uri, uris, openInTerminal),
-		),
-		vscode.commands.registerCommand(
 			"advancedSidebarTools.compareWith",
 			(uri, uris) => runAll(uri, uris, compareWith),
 		),
@@ -368,23 +364,6 @@ async function copyPath(targets) {
 		`Copied: ${text.split("\n")[0]}${targets.length > 1 ? ` (+${targets.length - 1} more)` : ""}`,
 		3000,
 	);
-}
-
-// ---------------------------------------------------------------- Open in Terminal
-
-async function openInTerminal(uri) {
-	const config = vscode.workspace.getConfiguration("advancedSidebarTools");
-	if (config.get("terminal") === "external") {
-		await vscode.commands.executeCommand("openInTerminal", uri);
-		return;
-	}
-	const stat = await fs.stat(uri.fsPath);
-	const cwd = stat.isDirectory() ? uri.fsPath : path.dirname(uri.fsPath);
-	const terminal = vscode.window.createTerminal({
-		name: path.basename(cwd),
-		cwd,
-	});
-	terminal.show();
 }
 
 // ---------------------------------------------------------------- Compare With

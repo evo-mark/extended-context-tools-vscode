@@ -1,6 +1,6 @@
 {
-  "name": "advanced-sidebar-tools",
-  "displayName": "Advanced Sidebar Tools",
+  "name": "extended-context-tools",
+  "displayName": "Extended Context Tools",
   "description": "Adds Duplicate, File Info, Copy Path, Open in Terminal, Compare With and Change Case options to the Explorer context menu.",
   "version": "0.3.0",
   "publisher": "evomark",
@@ -29,11 +29,6 @@
       {
         "command": "advancedSidebarTools.copyPath",
         "title": "Copy Path As…",
-        "category": "Sidebar Tools"
-      },
-      {
-        "command": "advancedSidebarTools.openInTerminal",
-        "title": "Open in Terminal Here",
         "category": "Sidebar Tools"
       },
       {
@@ -103,7 +98,7 @@
       ]
     },
     "configuration": {
-      "title": "Advanced Sidebar Tools",
+      "title": "Extended Context Tools",
       "properties": {
         "advancedSidebarTools.terminal": {
           "type": "string",
