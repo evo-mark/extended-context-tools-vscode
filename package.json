@@ -1,7 +1,7 @@
 {
   "name": "extended-context-tools",
   "displayName": "Extended Context Tools",
-  "description": "Adds Duplicate, File Info, Copy Path, Open in Terminal, Compare With and Change Case options to the Explorer context menu.",
+  "description": "Adds Duplicate, File Info, Copy Path, Compare With and Change Case options to the Explorer context menu.",
   "version": "0.3.0",
   "publisher": "evomark",
   "license": "MIT",
@@ -17,103 +17,77 @@
   "contributes": {
     "commands": [
       {
-        "command": "advancedSidebarTools.duplicate",
+        "command": "extendedContextTools.duplicate",
         "title": "Duplicate",
-        "category": "Sidebar Tools"
+        "category": "Context Tools"
       },
       {
-        "command": "advancedSidebarTools.fileInfo",
+        "command": "extendedContextTools.fileInfo",
         "title": "File Info",
-        "category": "Sidebar Tools"
+        "category": "Context Tools"
       },
       {
-        "command": "advancedSidebarTools.copyPath",
+        "command": "extendedContextTools.copyPath",
         "title": "Copy Path As…",
-        "category": "Sidebar Tools"
+        "category": "Context Tools"
       },
       {
-        "command": "advancedSidebarTools.compareWith",
+        "command": "extendedContextTools.compareWith",
         "title": "Compare With…",
-        "category": "Sidebar Tools"
+        "category": "Context Tools"
       },
       {
-        "command": "advancedSidebarTools.renameCase",
+        "command": "extendedContextTools.renameCase",
         "title": "Rename: Change Case…",
-        "category": "Sidebar Tools"
+        "category": "Context Tools"
       }
     ],
     "menus": {
       "explorer/context": [
         {
-          "command": "advancedSidebarTools.openInTerminal",
-          "group": "navigation@99"
-        },
-        {
-          "command": "advancedSidebarTools.compareWith",
+          "command": "extendedContextTools.compareWith",
           "group": "3_compare@99",
           "when": "!explorerResourceIsFolder || listMultiSelection"
         },
         {
-          "command": "advancedSidebarTools.duplicate",
+          "command": "extendedContextTools.duplicate",
           "group": "5_cutcopypaste@50"
         },
         {
-          "command": "advancedSidebarTools.copyPath",
+          "command": "extendedContextTools.copyPath",
           "group": "6_copypath@99"
         },
         {
-          "command": "advancedSidebarTools.renameCase",
+          "command": "extendedContextTools.renameCase",
           "group": "7_modification@50"
         },
         {
-          "command": "advancedSidebarTools.fileInfo",
+          "command": "extendedContextTools.fileInfo",
           "group": "7_modification@99"
         }
       ],
       "commandPalette": [
         {
-          "command": "advancedSidebarTools.duplicate",
+          "command": "extendedContextTools.duplicate",
           "when": "resourceScheme == file"
         },
         {
-          "command": "advancedSidebarTools.fileInfo",
+          "command": "extendedContextTools.fileInfo",
           "when": "resourceScheme == file"
         },
         {
-          "command": "advancedSidebarTools.copyPath",
+          "command": "extendedContextTools.copyPath",
           "when": "resourceScheme == file"
         },
         {
-          "command": "advancedSidebarTools.openInTerminal",
+          "command": "extendedContextTools.compareWith",
           "when": "resourceScheme == file"
         },
         {
-          "command": "advancedSidebarTools.compareWith",
-          "when": "resourceScheme == file"
-        },
-        {
-          "command": "advancedSidebarTools.renameCase",
+          "command": "extendedContextTools.renameCase",
           "when": "resourceScheme == file"
         }
       ]
-    },
-    "configuration": {
-      "title": "Extended Context Tools",
-      "properties": {
-        "advancedSidebarTools.terminal": {
-          "type": "string",
-          "enum": [
-            "integrated",
-            "external"
-          ],
-          "enumDescriptions": [
-            "Open a terminal panel inside VSCodium.",
-            "Open your system terminal app (set via terminal.external.osxExec)."
-          ],
-          "default": "integrated",
-          "description": "Where \"Open in Terminal Here\" opens the terminal."
-        }
-      }
     }
   },
   "scripts": {
@@ -121,7 +95,7 @@
     "format": "prettier --write src",
     "format:check": "prettier --check src",
     "package": "npx --yes @vscode/vsce package --allow-missing-repository",
-    "install-codium": "codium --install-extension advanced-sidebar-tools-$npm_package_version.vsix --force"
+    "install-codium": "codium --install-extension extended-context-tools-$npm_package_version.vsix --force"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

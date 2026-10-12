@@ -10,23 +10,23 @@ export function activate(context) {
 			clipboardProvider,
 		),
 		vscode.commands.registerCommand(
-			"advancedSidebarTools.duplicate",
+			"extendedContextTools.duplicate",
 			(uri, uris) => run(uri, uris, duplicate),
 		),
 		vscode.commands.registerCommand(
-			"advancedSidebarTools.fileInfo",
+			"extendedContextTools.fileInfo",
 			(uri, uris) => run(uri, uris, showInfo),
 		),
 		vscode.commands.registerCommand(
-			"advancedSidebarTools.copyPath",
+			"extendedContextTools.copyPath",
 			(uri, uris) => runAll(uri, uris, copyPath),
 		),
 		vscode.commands.registerCommand(
-			"advancedSidebarTools.compareWith",
+			"extendedContextTools.compareWith",
 			(uri, uris) => runAll(uri, uris, compareWith),
 		),
 		vscode.commands.registerCommand(
-			"advancedSidebarTools.renameCase",
+			"extendedContextTools.renameCase",
 			(uri, uris) => runAll(uri, uris, renameCase),
 		),
 	);
@@ -250,7 +250,7 @@ async function showInfo(uri) {
 	const name = path.basename(file);
 	const detail = rows.map(([k, v]) => `${k}: ${v}`).join("\n");
 	const panel = vscode.window.createWebviewPanel(
-		"advancedSidebarTools.fileInfo",
+		"extendedContextTools.fileInfo",
 		`Info: ${name}`,
 		vscode.ViewColumn.Active,
 		{ enableScripts: true },
@@ -368,7 +368,7 @@ async function copyPath(targets) {
 
 // ---------------------------------------------------------------- Compare With
 
-const CLIPBOARD_SCHEME = "advanced-sidebar-tools-clipboard";
+const CLIPBOARD_SCHEME = "extended-context-tools-clipboard";
 let clipboardSnapshot = "";
 
 const clipboardProvider = {
