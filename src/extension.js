@@ -1,6 +1,7 @@
 const vscode = require('vscode');
 const path = require('path');
 const fs = require('fs/promises');
+const { execFile } = require('child_process');
 
 function activate(context) {
     context.subscriptions.push(
@@ -144,6 +145,19 @@ function formatMode(mode) {
     return `${out} (${(mode & 0o777).toString(8)})`;
 }
 
+/** Resolves owner and group names via `ls -ld`, falling back to raw uid/gid. */
+function ownership(file, stat) {
+    return new Promise((resolve) => {
+        execFile('ls', ['-ld', '--', file], (err, stdout) => {
+            const [, , owner, group] = err ? [] : stdout.trim().split(/\s+/);
+            resolve({
+                owner: owner ? `${owner} (${stat.uid})` : String(stat.uid),
+                group: group ? `${group} (${stat.gid})` : String(stat.gid),
+            });
+        });
+    });
+}
+
 /** Recursively count files/folders and total size. Skips symlinks. */
 async function folderStats(dir, acc = { files: 0, folders: 0, size: 0 }) {
     const entries = await fs.readdir(dir, { withFileTypes: true });
@@ -200,17 +214,70 @@ async function showInfo(uri) {
     rows.push(['Created', formatDate(stat.birthtime)]);
     rows.push(['Modified', formatDate(stat.mtime)]);
     rows.push(['Accessed', formatDate(stat.atime)]);
-    if (process.platform !== 'win32') rows.push(['Permissions', formatMode(stat.mode)]);
+    if (process.platform !== 'win32') {
+        const { owner, group } = await ownership(file, stat);
+        rows.push(['Owner', owner]);
+        rows.push(['Group', group]);
+        rows.push(['Permissions', formatMode(stat.mode)]);
+    }
 
+    const name = path.basename(file);
     const detail = rows.map(([k, v]) => `${k}: ${v}`).join('\n');
-    const choice = await vscode.window.showInformationMessage(
-        path.basename(file),
-        { modal: true, detail },
-        'Copy Path',
-        'Copy Info'
+    const panel = vscode.window.createWebviewPanel(
+        'advancedSidebarTools.fileInfo',
+        `Info: ${name}`,
+        vscode.ViewColumn.Active,
+        { enableScripts: true }
     );
-    if (choice === 'Copy Path') await vscode.env.clipboard.writeText(file);
-    if (choice === 'Copy Info') await vscode.env.clipboard.writeText(`${path.basename(file)}\n${detail}`);
+    panel.webview.html = infoHtml(name, rows);
+    panel.webview.onDidReceiveMessage(async (msg) => {
+        if (msg === 'copyPath') await vscode.env.clipboard.writeText(file);
+        else if (msg === 'copyInfo') await vscode.env.clipboard.writeText(`${name}\n${detail}`);
+        else return;
+        vscode.window.setStatusBarMessage(msg === 'copyPath' ? 'Path copied' : 'File info copied', 2000);
+    });
+}
+
+function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+}
+
+function infoHtml(name, rows) {
+    const nonce = Math.random().toString(36).slice(2);
+    const body = rows.map(([k, v]) => `<tr><th>${escapeHtml(k)}</th><td>${escapeHtml(v)}</td></tr>`).join('');
+    return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'nonce-${nonce}';">
+<style>
+    body { font-family: var(--vscode-font-family); font-size: var(--vscode-font-size); color: var(--vscode-foreground); padding: 16px 24px; }
+    h2 { font-weight: 600; margin: 0 0 12px; word-break: break-all; }
+    table { border-collapse: collapse; }
+    th, td { text-align: left; padding: 4px 16px 4px 0; vertical-align: top; }
+    th { font-weight: normal; color: var(--vscode-descriptionForeground); white-space: nowrap; }
+    td { white-space: nowrap; user-select: text; font-family: var(--vscode-editor-font-family); }
+    .actions { margin-top: 16px; display: flex; gap: 8px; }
+    button { font: inherit; padding: 4px 12px; border: none; border-radius: 2px; cursor: pointer;
+        color: var(--vscode-button-foreground); background: var(--vscode-button-background); }
+    button:hover { background: var(--vscode-button-hoverBackground); }
+    button.secondary { color: var(--vscode-button-secondaryForeground); background: var(--vscode-button-secondaryBackground); }
+    button.secondary:hover { background: var(--vscode-button-secondaryHoverBackground); }
+</style>
+</head>
+<body>
+<h2>${escapeHtml(name)}</h2>
+<table>${body}</table>
+<div class="actions">
+    <button data-msg="copyPath">Copy Path</button>
+    <button data-msg="copyInfo" class="secondary">Copy Info</button>
+</div>
+<script nonce="${nonce}">
+    const vscode = acquireVsCodeApi();
+    for (const b of document.querySelectorAll('button')) b.onclick = () => vscode.postMessage(b.dataset.msg);
+</script>
+</body>
+</html>`;
 }
 
 // ---------------------------------------------------------------- Copy Path
